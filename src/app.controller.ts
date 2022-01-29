@@ -8,7 +8,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  async getHello(): Promise<any> {
+  async getSign(): Promise<any> {
     const auth = getAuth();
     const accessToken = await signInWithEmailAndPassword(
       auth,
