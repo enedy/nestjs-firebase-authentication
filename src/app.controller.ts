@@ -1,13 +1,18 @@
 import { Controller, ForbiddenException, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 // https://firebase.google.com/docs/auth/web/start?hl=pt-br
-@Controller()
+@ApiTags('Login')
+@Controller({ path: 'login', version: '1' })
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
+  @Get('sign')
+  @ApiOperation({
+    summary: 'Cadastra um usuário com a necessidade de um token de acesso',
+  })
   async getSign(): Promise<any> {
     const auth = getAuth();
     const accessToken = await signInWithEmailAndPassword(
