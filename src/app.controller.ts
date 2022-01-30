@@ -17,6 +17,10 @@ export class AppController {
     )
       .then(async (userCredential) => {
         const user = userCredential.user;
+
+        // refresh token
+        // return await auth.currentUser.getIdToken(true);
+
         return await user.getIdToken();
       })
       .catch((err) => {
