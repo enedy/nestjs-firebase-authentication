@@ -12,7 +12,8 @@ export class AppController {
 
   @Get('sign')
   @ApiOperation({
-    summary: 'Cadastra um usuário com a necessidade de um token de acesso',
+    summary:
+      'Obtém o token de acesso (as infos de login estão chumbadas no código)',
   })
   async getSign(): Promise<any> {
     const auth = getAuth();
