@@ -2,6 +2,7 @@ import { Controller, ForbiddenException, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import * as firebase from 'firebase-admin';
 
 // https://firebase.google.com/docs/auth/web/start?hl=pt-br
 @ApiTags('Login')
@@ -15,23 +16,20 @@ export class AppController {
   })
   async getSign(): Promise<any> {
     const auth = getAuth();
-    const accessToken = await signInWithEmailAndPassword(
+    const userCredential = await signInWithEmailAndPassword(
       auth,
       'enedy_allan@yahoo.com.br',
       '123456',
-    )
-      .then(async (userCredential) => {
-        const user = userCredential.user;
+    ).catch((err) => {
+      throw new ForbiddenException('Erro token.');
+    });
 
-        // refresh token
-        // return await auth.currentUser.getIdToken(true);
+    const userClaims = { role: 'admin', policies: ['create', 'update'] };
 
-        return await user.getIdToken();
-      })
-      .catch((err) => {
-        throw new ForbiddenException('Erro token.');
-      });
+    await firebase
+      .auth()
+      .setCustomUserClaims(userCredential.user.uid, userClaims);
 
-    return accessToken;
+    return await userCredential.user.getIdToken();
   }
 }
